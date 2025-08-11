@@ -4,10 +4,12 @@
 -- Insert subjects
 INSERT INTO subjects (id, name, description, icon) VALUES
     (uuid_generate_v4(), 'Mathematics', 'Mathematical concepts, problem solving, and numerical analysis', '🔢'),
+    (uuid_generate_v4(), 'Maths', 'Mathematical concepts, problem solving, and numerical analysis', '🔢'),
     (uuid_generate_v4(), 'Science', 'Physics, Chemistry, Biology, and Earth Sciences', '🔬'),
     (uuid_generate_v4(), 'English', 'Language arts, literature, grammar, and writing', '📚'),
     (uuid_generate_v4(), 'History', 'World history, historical events, and civilizations', '🏛️'),
     (uuid_generate_v4(), 'Geography', 'World geography, countries, capitals, and physical features', '🌍'),
+    (uuid_generate_v4(), 'Social Studies', 'Study of social relationships and human society', '🧑‍🤝‍🧑'),
     (uuid_generate_v4(), 'Computer Science', 'Programming, algorithms, and computer technology', '💻');
 
 -- Insert sample users (password is 'password123' hashed with bcrypt)

@@ -7,9 +7,8 @@ const logFormat = winston.format.combine(
     format: 'YYYY-MM-DD HH:mm:ss'
   }),
   winston.format.errors({ stack: true }),
-  winston.format.printf(({ level, message, timestamp, stack }) => {
-    return `${timestamp} [${level.toUpperCase()}]: ${stack || message}`;
-  })
+  winston.format.splat(),
+  winston.format.json()
 );
 
 // Create logger instance

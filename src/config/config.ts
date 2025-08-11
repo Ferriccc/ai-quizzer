@@ -48,6 +48,9 @@ interface Config {
     maxFileSize: string;
     path: string;
   };
+  gemini: {
+    apiKey: string;
+  };
   logging: {
     level: string;
     file: string;
@@ -76,6 +79,9 @@ export const config: Config = {
   ai: {
     groqApiKey: process.env.GROQ_API_KEY || '',
     groqModel: process.env.GROQ_MODEL || 'llama3-8b-8192'
+  },
+  gemini: {
+    apiKey: process.env.GEMINI_API_KEY || ''
   },
   redis: {
     url: process.env.REDIS_URL || 'redis://localhost:6379',
@@ -110,7 +116,8 @@ export const config: Config = {
 export function validateConfig(): void {
   const requiredEnvVars = [
     'JWT_SECRET',
-    'GROQ_API_KEY'
+    'GROQ_API_KEY',
+    'GEMINI_API_KEY'
   ];
 
   const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);

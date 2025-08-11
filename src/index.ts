@@ -124,7 +124,7 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/quiz', quizRoutes);
+app.use('/api/v1/quizzes', quizRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/leaderboard', leaderboardRoutes);
 
@@ -137,7 +137,7 @@ app.get('/api/v1', (req, res) => {
     documentation: '/api-docs',
     endpoints: {
       authentication: '/api/v1/auth',
-      quizzes: '/api/v1/quiz',
+      quizzes: '/api/v1/quizzes',
       users: '/api/v1/user',
       leaderboard: '/api/v1/leaderboard'
     }
