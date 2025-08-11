@@ -1,0 +1,556 @@
+{
+    "info": {
+        "name": "AI Quizzer API",
+        "description": "Complete API collection for AI-powered Quiz Application Backend",
+        "version": "1.0.0",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{accessToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000/api/v1",
+            "type": "string"
+        },
+        {
+            "key": "accessToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "refreshToken",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "userId",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Login (Mock Authentication)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    if (response.success && response.data) {",
+                                    "        pm.collectionVariables.set('accessToken', response.data.accessToken);",
+                                    "        pm.collectionVariables.set('refreshToken', response.data.refreshToken);",
+                                    "        pm.collectionVariables.set('userId', response.data.user.id);",
+                                    "        console.log('Login successful! Tokens saved.');",
+                                    "    }",
+                                    "}",
+                                    "",
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response has success property', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success', true);",
+                                    "});",
+                                    "",
+                                    "pm.test('Response contains access token', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.data).to.have.property('accessToken');",
+                                    "    pm.expect(jsonData.data.accessToken).to.be.a('string');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"demo_user\",\n  \"password\": \"any_password\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Mock authentication endpoint that accepts any username/password combination"
+                    }
+                },
+                {
+                    "name": "Register New User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    if (response.success && response.data) {",
+                                    "        pm.collectionVariables.set('accessToken', response.data.accessToken);",
+                                    "        pm.collectionVariables.set('refreshToken', response.data.refreshToken);",
+                                    "        pm.collectionVariables.set('userId', response.data.user.id);",
+                                    "        console.log('Registration successful! Tokens saved.');",
+                                    "    }",
+                                    "}",
+                                    "",
+                                    "pm.test('Status code is 201', function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test('User created successfully', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success', true);",
+                                    "    pm.expect(jsonData.data.user).to.have.property('username');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"new_user_{{$randomInt}}\",\n  \"email\": \"user{{$randomInt}}@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"gradeLevel\": 10\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new user account"
+                    }
+                },
+                {
+                    "name": "Get Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Profile data is returned', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success', true);",
+                                    "    pm.expect(jsonData.data).to.have.property('user');",
+                                    "    pm.expect(jsonData.data.user).to.have.property('id');",
+                                    "    pm.expect(jsonData.data.user).to.have.property('username');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/me",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "me"
+                            ]
+                        },
+                        "description": "Get current user profile (requires authentication)"
+                    }
+                },
+                {
+                    "name": "Refresh Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    if (response.success && response.data) {",
+                                    "        pm.collectionVariables.set('accessToken', response.data.accessToken);",
+                                    "        pm.collectionVariables.set('refreshToken', response.data.refreshToken);",
+                                    "        console.log('Token refreshed successfully!');",
+                                    "    }",
+                                    "}",
+                                    "",
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('New tokens provided', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.data).to.have.property('accessToken');",
+                                    "    pm.expect(jsonData.data).to.have.property('refreshToken');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/refresh",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "refresh"
+                            ]
+                        },
+                        "description": "Refresh access token using refresh token"
+                    }
+                },
+                {
+                    "name": "Verify Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Token is valid', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.data).to.have.property('valid', true);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/verify-token",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "verify-token"
+                            ]
+                        },
+                        "description": "Verify if the current access token is valid"
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Logout successful', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('success', true);",
+                                    "});",
+                                    "",
+                                    "// Clear tokens after logout",
+                                    "pm.collectionVariables.set('accessToken', '');",
+                                    "pm.collectionVariables.set('refreshToken', '');",
+                                    "console.log('Logged out successfully. Tokens cleared.');"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/logout",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "logout"
+                            ]
+                        },
+                        "description": "Logout user and invalidate tokens"
+                    }
+                }
+            ],
+            "description": "Authentication endpoints for login, registration, and token management"
+        },
+        {
+            "name": "Quiz Management",
+            "item": [
+                {
+                    "name": "List Quizzes (Coming Soon)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/quiz",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "quiz"
+                            ]
+                        },
+                        "description": "Get list of available quizzes (placeholder endpoint)"
+                    }
+                },
+                {
+                    "name": "Create Quiz (Coming Soon)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Sample Quiz\",\n  \"description\": \"A sample quiz for testing\",\n  \"subjectId\": \"uuid-here\",\n  \"gradeLevel\": 10,\n  \"difficultyLevel\": \"medium\",\n  \"timeLimitMinutes\": 30,\n  \"questions\": [\n    {\n      \"questionText\": \"What is 2 + 2?\",\n      \"questionType\": \"multiple_choice\",\n      \"marks\": 1,\n      \"options\": [\n        { \"optionText\": \"3\", \"isCorrect\": false, \"orderIndex\": 0 },\n        { \"optionText\": \"4\", \"isCorrect\": true, \"orderIndex\": 1 },\n        { \"optionText\": \"5\", \"isCorrect\": false, \"orderIndex\": 2 }\n      ]\n    }\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/quiz",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "quiz"
+                            ]
+                        },
+                        "description": "Create a new quiz (placeholder endpoint)"
+                    }
+                }
+            ],
+            "description": "Quiz management endpoints (under development)"
+        },
+        {
+            "name": "User Management",
+            "item": [
+                {
+                    "name": "User Routes (Coming Soon)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/user",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "user"
+                            ]
+                        },
+                        "description": "User management endpoints (placeholder)"
+                    }
+                }
+            ],
+            "description": "User management endpoints (under development)"
+        },
+        {
+            "name": "Leaderboard",
+            "item": [
+                {
+                    "name": "Leaderboard Routes (Coming Soon)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/leaderboard",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "leaderboard"
+                            ]
+                        },
+                        "description": "Leaderboard endpoints (placeholder)"
+                    }
+                }
+            ],
+            "description": "Leaderboard endpoints (under development)"
+        },
+        {
+            "name": "System",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('Service is healthy', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('status', 'OK');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/health",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "health"
+                            ]
+                        },
+                        "description": "Check if the service is running and healthy"
+                    }
+                },
+                {
+                    "name": "API Info",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test('API info returned', function () {",
+                                    "    const jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData).to.have.property('name');",
+                                    "    pm.expect(jsonData).to.have.property('version');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ]
+                        },
+                        "description": "Get API information and available endpoints"
+                    }
+                },
+                {
+                    "name": "API Documentation",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/api-docs",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000",
+                            "path": [
+                                "api-docs"
+                            ]
+                        },
+                        "description": "Access Swagger API documentation (opens in browser)"
+                    }
+                }
+            ],
+            "description": "System health and information endpoints"
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Global pre-request script",
+                    "console.log('Making request to:', pm.request.url.toString());"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Global test script",
+                    "pm.test('Response time is reasonable', function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                    "});",
+                    "",
+                    "pm.test('Response has proper content type', function () {",
+                    "    if (pm.response.headers.get('content-type')) {",
+                    "        pm.expect(pm.response.headers.get('content-type')).to.include('application/json');",
+                    "    }",
+                    "});"
+                ]
+            }
+        }
+    ]
+}
